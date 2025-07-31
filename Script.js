@@ -88,6 +88,19 @@ const malla = {
 
 const contenedor = document.getElementById("malla");
 
+// Cargar ramos aprobados del localStorage
+const aprobadosGuardados = JSON.parse(localStorage.getItem("ramosAprobados") || "[]");
+
+function guardarProgreso(ramo) {
+  const index = aprobadosGuardados.indexOf(ramo);
+  if (index === -1) {
+    aprobadosGuardados.push(ramo);
+  } else {
+    aprobadosGuardados.splice(index, 1);
+  }
+  localStorage.setItem("ramosAprobados", JSON.stringify(aprobadosGuardados));
+}
+
 for (const año in malla) {
   for (const semestre in malla[año]) {
     const bloque = document.createElement("div");
@@ -105,8 +118,13 @@ for (const año in malla) {
       divRamo.classList.add("ramo");
       divRamo.textContent = ramo;
 
+      if (aprobadosGuardados.includes(ramo)) {
+        divRamo.classList.add("aprobado");
+      }
+
       divRamo.addEventListener("click", () => {
         divRamo.classList.toggle("aprobado");
+        guardarProgreso(ramo);
       });
 
       listaRamos.appendChild(divRamo);
